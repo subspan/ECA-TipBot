@@ -20,7 +20,7 @@ client.on("ready", () => {
 //MAIN CHANNEL
 client.on("message", (message) => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-    const addy = message.content.slice(args).split(/ +/g);
+    const address = message.content.slice(args).split(/ +/g);
     const command = args.shift().toLowerCase();
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id !== "397489814351380482") return;
 
@@ -41,15 +41,15 @@ client.on("message", (message) => {
 //PRIVATE MESSAGES
 client.on("message", (message) => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-    const addy = message.content.slice(args).split(/ +/g);
+    const address = args[1];
     const command = args.shift().toLowerCase();
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id == "397489814351380482") return;
     
     if(command === "address") {
         // Save to Json
-        let obj = {name: message.author.id, address: args}
-        fs.writeFile("./addys.json", JSON.stringify(obj), (err) => console.error);
-        message.reply(`${args} has been saved to your username`);
+        let obj = {id: message.author.id, address: address}
+        fs.writeFile("./addresses.json", JSON.stringify(obj), (err) => console.error);
+        message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
         console.log(obj);
     }
 });
