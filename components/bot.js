@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const config = require("../config.json");
 const fs = require("fs");
+const jsonfile = require('jsonfile');
 const client = new Discord.Client();
 const users = new Discord.Collection();
 
@@ -51,6 +52,18 @@ client.on("message", (message) => {
         fs.writeFile("./addresses.json", JSON.stringify(obj), (err) => console.error);
         message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
         console.log(obj);
+    }
+    
+    if(command === "checkaddress") {
+        let file = './addresses.json'
+        jsonfile.readFile(file, function(err, obj) {
+            if (err) {
+                console.log(err);
+                message.reply(`Error Reading addresses.json, ${err}`);
+            } else {
+            message.reply(`You're address is ${JSON.stringify(obj.address)}`);
+            console.log(obj);
+        }})
     }
 });
 
