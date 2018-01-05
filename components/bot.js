@@ -48,8 +48,8 @@ client.on("message", (message) => {
     
     if(command === "address") {
         // Save to Json
-        let obj = {id: message.author.id, address: address}
-        fs.writeFile("./addresses.json", JSON.stringify(obj), (err) => console.error);
+        let obj = {id: message.author.id, address: address};
+        fs.writeFile("./addresses.json", JSON.stringify(obj), {flag: 'a'}, (err) => console.error);
         message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
         console.log(obj);
     }
