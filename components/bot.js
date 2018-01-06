@@ -54,14 +54,11 @@ client.on("message", (message) => {
         console.log(tmpAddress[0].address.includes(address));
         console.log(tmpAddress[0].address);
         console.log(tmpAddress[0].id);
-        let myObj = JSON.stringify(tmpAddress);
-        console.log(myObj);
-
         
-//        jsonfile.writeFile(file, tmpAddress, function(err) {
-//            console.log(err)
-//        });
-//        
+        jsonfile.writeFile(file, tmpAddress, function(err) {
+            console.log(err)
+        });
+        
         
     };
     
@@ -71,7 +68,9 @@ client.on("message", (message) => {
                 console.log(err);
                 message.reply(`Error Reading addresses.json, ${err}`);
             } else {
-            console.log(obj);
+            let user = obj;
+            console.log(obj[1].address);
+            console.log(user[0].address);
     }
         });
     }
