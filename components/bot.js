@@ -42,13 +42,13 @@ client.on("message", (message) => {
     if(command === "address") {
         
         tmpAddress.push({["id"] : message.author.id,["address"] : address});
-        console.log(`Saving: ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].addres}...`);
+        console.log(`◉_◉ Saving: ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].address} ◉_◉`);
         
         jsonfile.writeFile(file, tmpAddress, function(err) {
             if(err) {
                 console.log(err) 
             } else {
-        console.log(`Information Saved`);        
+        console.log(`◉_◉Information Saved◉_◉`);        
             }
         });
     };
@@ -63,7 +63,8 @@ client.on("message", (message) => {
                     let i = 0;
                     if (obj[i].id === message.author.id) {
                         let foundUser = obj[i];
-                        console.log(`This Works Man, Your ID is ${foundUser.id} and your wallet address is ${foundUser.address}`);
+                        console.log(`◉_◉ This Works Man, Your ID is ${foundUser.id} and your wallet address is ${foundUser.address} ◉_◉`);
+                        users.find("id", foundUser.id).send(`◉_◉ This Works Man, Your ID is ${foundUser.id} and your wallet address is ${foundUser.address} ◉_◉`);
                     } else {
                         console.log('broke');
                     }
@@ -77,7 +78,7 @@ client.on("message", (message) => {
 
 client.on("guildMemberAdd", (member) => {
     users.set(member.id, member.user);
-    users.find("id", member.id).send(`Hey ${member.user}, reply with !address Your_Address to be able to receive tips!`);
+    users.find("id", member.id).send(`◉_◉ Hey ${member.user}, I am tip-bot!  If You Don't Want Tips You Can Ignore This Message! You Can Reply With !address Your_Address to be able to Receive Tips! Please Keep In Mind This Stores Your Public Address in Our Bot's Logs, If You Use TOR for Privacy, We Recommend Using a Different Public Address. ◉_◉`);
 });
 
 client.on("guildMemberRemove", (member) => {
