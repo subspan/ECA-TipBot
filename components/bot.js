@@ -11,15 +11,6 @@ client.on("ready", () => {
     console.log("I am ready!");
 });
 
-//client.on("message", (message) => {
-////    contactBot(message);
-//if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id !== "397489814351380482") return;
-//    if (message.content.startsWith(config.prefix + "tip")) {
-//        console.log(message.author.id, message.channel.id);
-//        message.member.send(`Hello ${message.author.id}`);
-//    }
-//});
-
 //MAIN CHANNEL
 client.on("message", (message) => {
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -62,14 +53,6 @@ client.on("message", (message) => {
         
     };
     
-    Array.prototype.sum = function (prop) {
-        let total = 0;
-        for (let i = 0, _len = this.length; i < _len; i++ ) {
-            total += this[i][prop]
-        }
-        return total;
-    }
-    
     if(command === "test") {
         jsonfile.readFile(file, function(err, obj) {
             if (err) {
@@ -85,43 +68,13 @@ client.on("message", (message) => {
                         console.log('broke');
                     }
                 })
-//            let user = obj;
-//            console.log(obj[1].address);
-//            console.log(user[0].address);
-//            console.log(user[3].address);
-//            console.log(user[2].address);
-    }
+            }
         });
     }
-        
-        
-//        
-//        // Save to Object
-//        fs.readFile(file, function(err, obj) {
-//            if (err) {
-//                console.log(err);
-//            } else { 
-//                let this obj 
-//            };
-//        });
-//        let obj = ({id: message.author.id, address: address});
-//        names.push(obj);
-//        fs.writeFile("./addresses.json", JSON.stringify(names), (err) => console.error);
-////        message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
-//        console.log(names);
-//    }
-//    
-//    if(command === "checkaddress") {
-//        jsonfile.readFile(file, function(err, obj) {
-//            if (err) {
-//                console.log(err);
-//                message.reply(`Error Reading addresses.json, ${err}`);
-//            } else {
-//            message.reply(`You're address is ${JSON.stringify(obj.address)}`);
-//            console.log(obj.id);
-//        }})
-//    }
 });
+
+
+
 client.on("guildMemberAdd", (member) => {
     users.set(member.id, member.user);
     users.find("id", member.id).send(`Hey ${member.user}, reply with !address Your_Address to be able to receive tips!`);
@@ -133,19 +86,3 @@ client.on("guildMemberRemove", (member) => {
 
 
 client.login(config.token);
-
-//client.on("message", (message) => {
-//    let prefix = config.prefix;
-//    if(message.author.id !== config.ownerID) {return};
-//
-//    if (message.content.startsWith(config.prefix + "prefix")) {
-//        // Gets prefix from command
-//        let newPrefix = message.content.split(" ").slice(1, 2)[0];
-//        // Change the configuration in memory
-//        config.prefix = newPrefix;
-//    
-//        // Save to file
-//        fs.writeFile("./config.json", JSON.stringify(config), (err) => console.error)
-//    }
-//
-//});
