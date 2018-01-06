@@ -4,6 +4,8 @@ const fs = require("fs");
 const jsonfile = require('jsonfile');
 const client = new Discord.Client();
 const users = new Discord.Collection();
+const file = './addresses.json';
+const savedAddresses = [];
 
 client.on("ready", () => {
     console.log("I am ready!");
@@ -47,27 +49,43 @@ client.on("message", (message) => {
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id == "397489814351380482") return;
     
     if(command === "address") {
-        // Save to Json
-        let obj = {id: message.author.id, address: address};
-        fs.writeFile("./addresses.json", JSON.stringify(obj), {flag: 'a'}, (err) => console.error);
-        message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
-        console.log(obj);
-    }
-    
-    if(command === "checkaddress") {
-        let file = './addresses.json'
-        jsonfile.readFile(file, function(err, obj) {
-            if (err) {
-                console.log(err);
-                message.reply(`Error Reading addresses.json, ${err}`);
-            } else {
-            message.reply(`You're address is ${JSON.stringify(obj.address)}`);
-            console.log(obj);
-        }})
-    }
+        
+        let id = message.author.id;
+        let tipAddress = address;
+        
+        savedAddresses.push({["id"] : id,["address"] : tipAddress});
+        
+        console.log(savedAddresses[0].address.includes(tipAddress));
+    };
+        
+        
+//        
+//        // Save to Object
+//        fs.readFile(file, function(err, obj) {
+//            if (err) {
+//                console.log(err);
+//            } else { 
+//                let this obj 
+//            };
+//        });
+//        let obj = ({id: message.author.id, address: address});
+//        names.push(obj);
+//        fs.writeFile("./addresses.json", JSON.stringify(names), (err) => console.error);
+////        message.reply(`Address Set to ${address} ; Change with !address Your_Address`);
+//        console.log(names);
+//    }
+//    
+//    if(command === "checkaddress") {
+//        jsonfile.readFile(file, function(err, obj) {
+//            if (err) {
+//                console.log(err);
+//                message.reply(`Error Reading addresses.json, ${err}`);
+//            } else {
+//            message.reply(`You're address is ${JSON.stringify(obj.address)}`);
+//            console.log(obj.id);
+//        }})
+//    }
 });
-
-
 client.on("guildMemberAdd", (member) => {
     users.set(member.id, member.user);
     users.find("id", member.id).send(`Hey ${member.user}, reply with !address Your_Address to be able to receive tips!`);
