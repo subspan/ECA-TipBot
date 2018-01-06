@@ -62,16 +62,25 @@ client.on("message", (message) => {
         
     };
     
+    Array.prototype.sum = function (prop) {
+        let total = 0;
+        for (let i = 0, _len = this.length; i < _len; i++ ) {
+            total += this[i][prop]
+        }
+        return total;
+    }
+    
     if(command === "test") {
         jsonfile.readFile(file, function(err, obj) {
             if (err) {
                 console.log(err);
                 message.reply(`Error Reading addresses.json, ${err}`);
             } else {
-                var new_obj_array = obj.filter(function() {
-                    console.log('obj.id' + obj[0].id + ' Author ID: ' + message.author.id);
-                    if(obj[0].id === message.author.id) {
-                        console.log('works');
+                let new_obj_array = obj.filter(function() {
+                    let i = 0;
+                    if (obj[i].id === message.author.id) {
+                        let thisGuy = obj[i];
+                        console.log(`This Works Man, Your ID is ${thisGuy.id} and your wallet address is ${thisGuy.address}`);
                     } else {
                         console.log('broke');
                     }
