@@ -68,9 +68,19 @@ client.on("message", (message) => {
                 console.log(err);
                 message.reply(`Error Reading addresses.json, ${err}`);
             } else {
-            let user = obj;
-            console.log(obj[1].address);
-            console.log(user[0].address);
+                var new_obj_array = obj.filter(function() {
+                    console.log('obj.id' + obj[0].id + ' Author ID: ' + message.author.id);
+                    if(obj[0].id === message.author.id) {
+                        console.log('works');
+                    } else {
+                        console.log('broke');
+                    }
+                })
+//            let user = obj;
+//            console.log(obj[1].address);
+//            console.log(user[0].address);
+//            console.log(user[3].address);
+//            console.log(user[2].address);
     }
         });
     }
