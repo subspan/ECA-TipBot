@@ -5,7 +5,7 @@ const jsonfile = require('jsonfile');
 const client = new Discord.Client();
 const users = new Discord.Collection();
 const file = './addresses.json';
-const savedAddresses = [];
+const tmpAddress = [];
 
 client.on("ready", () => {
     console.log("I am ready!");
@@ -50,13 +50,31 @@ client.on("message", (message) => {
     
     if(command === "address") {
         
-        let id = message.author.id;
-        let tipAddress = address;
+        tmpAddress.push({["id"] : message.author.id,["address"] : address});
+        console.log(tmpAddress[0].address.includes(address));
+        console.log(tmpAddress[0].address);
+        console.log(tmpAddress[0].id);
+        let myObj = JSON.stringify(tmpAddress);
+        console.log(myObj);
+
         
-        savedAddresses.push({["id"] : id,["address"] : tipAddress});
+//        jsonfile.writeFile(file, tmpAddress, function(err) {
+//            console.log(err)
+//        });
+//        
         
-        console.log(savedAddresses[0].address.includes(tipAddress));
     };
+    
+    if(command === "test") {
+        jsonfile.readFile(file, function(err, obj) {
+            if (err) {
+                console.log(err);
+                message.reply(`Error Reading addresses.json, ${err}`);
+            } else {
+            console.log(obj);
+    }
+        });
+    }
         
         
 //        
