@@ -42,15 +42,15 @@ client.on("message", (message) => {
     if(command === "address") {
         
         tmpAddress.push({["id"] : message.author.id,["address"] : address});
-        console.log(tmpAddress[0].address.includes(address));
-        console.log(tmpAddress[0].address);
-        console.log(tmpAddress[0].id);
+        console.log(`Saving: ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].addres}...`);
         
         jsonfile.writeFile(file, tmpAddress, function(err) {
-            console.log(err)
+            if(err) {
+                console.log(err) 
+            } else {
+        console.log(`Information Saved`);        
+            }
         });
-        
-        
     };
     
     if(command === "test") {
@@ -62,8 +62,8 @@ client.on("message", (message) => {
                 let new_obj_array = obj.filter(function() {
                     let i = 0;
                     if (obj[i].id === message.author.id) {
-                        let thisGuy = obj[i];
-                        console.log(`This Works Man, Your ID is ${thisGuy.id} and your wallet address is ${thisGuy.address}`);
+                        let foundUser = obj[i];
+                        console.log(`This Works Man, Your ID is ${foundUser.id} and your wallet address is ${foundUser.address}`);
                     } else {
                         console.log('broke');
                     }
