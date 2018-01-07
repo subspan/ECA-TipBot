@@ -13,22 +13,16 @@ client.on("ready", () => {
 
 //MAIN CHANNEL
 client.on("message", (message) => {
+    //splits args after !
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    //assigns user address to arg1
     const address = message.content.slice(args).split(/ +/g);
+    //shifts to LC
     const command = args.shift().toLowerCase();
+    //Stops if no prefix, if Author is BOT, or if Channel is not Main-Channel
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id !== "397489814351380482") return;
-
-    if(command === "tip") {
-        message.reply(`Hello ${message.author}!`)
-        console.log(message.author.id, message.channel.id);
-        message.member.send(`Hello ${message.author.id}`);
-    }
     
-    if(command === "lastuser") {
-        const lastuser = users.map(u => u.toString()).join(" ");
-        message.reply(`Last User Was ${lastuser}`);
-        message.member.send(`sup`);
-    }
+    //Tip Commands Will Go Here
     
 });
 
@@ -55,36 +49,12 @@ client.on("message", (message) => {
                 console.log(`(ノಠ益ಠ)ノ彡┻━┻ ${err}`) 
                 message.reply(err) 
             } else {
-                //Replies With Saved Information
+                //Logs & Replies With Saved Information
                 console.log(`(◕‿◕✿) Information Saved ID: ${message.author.id} Address: ${address}`);        
                 message.reply(`(◕‿◕✿) Information Saved! ID: ${message.author.id} Address: ${address}`);        
             }
         });
     };  
-    
-    
-    if(command === "write") {
-        let obj = { [currentUser] : address };
-        tmpAddress.push(obj);
-        fs.writeFile(file, JSON.stringify(tmpAddress), (err) => {
-            if (err) throw err;
-            console.log(tmpAddress);
-        })
-    }
-    
-    if(command === "test") {
-        let obj = { [currentUser] : address };
-        console.log(currentUser);
-        console.log(obj);
-        console.log(obj[currentUser]);
-        jsonfile.writeFile(file, obj, function(err) {
-            if(err) {
-                console.log(err)
-            } else {
-                console.log(obj);
-            }
-        })
-    }
     
     //Checks For Your Address and Returns From JSON
     if(command === "checkaddress") {
@@ -94,34 +64,50 @@ client.on("message", (message) => {
                 //Provides Error if Error
                 console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
                 message.reply(`(ノಠ益ಠ)ノ彡┻━┻ Error Reading addresses.json`);
+            } else if (!obj[currentUser]) {
+                // Log Not Found And Tells User No Address Set
+                console.log(`(ノಠ益ಠ)ノ彡┻━┻ No Address Set For This Person`);
+                message.reply(`(ノಠ益ಠ)ノ彡┻━┻ \n You Have Not Set An Address \n \n Use !address Your_Address to set!`);
             } else {
-                    //Loop For User
+                // Log Found Address + Message User Set Address
                 console.log(obj[currentUser]);
-                message.reply(`You're address is ${obj[currentUser]}`);
+                message.reply(`(◕‿◕✿) \n You're address is ${obj[currentUser]}`);
             }
         });
     }
 });
 
+// When New User Joins
 client.on("guildMemberAdd", (member) => {
+// Adds New Member to Users
     users.set(member.id, member.user);
+// Reads Addresses.JSON
     jsonfile.readFile(file, function(err, obj) {
         if (err) {
             console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
+            users.find("id", member.id).send(`Hey! ${member.user}, Tell The Bot Owner I Can't Read The Addresses List! ლ(ಠ益ಠლ)`);
+        // If No ID is Found in Addresses.JSON
         } else if(!obj[member.id]) {
+            console.log(`(ノಠ益ಠ)ノ彡┻━┻ \n No Address Set For This Person: Sending Greeting`)
             users.find("id", member.id).send(
-                `Hey! ${member.user}, Reply with !address Your_Address. This Will Save Your Address To Your ID And Allow You To Receive Tips! \n \n PLEASE NOTE: If You Are Using Electra With TOR This Potentially Compromises Security by linking your Discord ID with your public wallet address. This data is only used for tip bot and kept safe, but we Advise Using a Public Address if this is a concern to you.`
-            );
-        } else { 
+                `(◕‿◕✿) \n Hey! ${member.user}, Reply with !address Your_Address. This Will Save Your Address To Your ID And Allow You To Receive Tips! \n \n PLEASE NOTE: If You Are Using Electra With TOR This Potentially Compromises Security by linking your Discord ID with your public wallet address. This data is only used for tip bot and kept safe, but we Advise Using a Public Address if this is a concern to you.`);
+            //Deletes Member From Users Collection
+            users.delete(member.id);
+        // If Address Is Found
+        } else {
+            // Logs & DMs user with Address and Info How To Change
             console.log(obj[member.id]);
-            users.find("id", member.id).send(`Hey! ${member.user}, Your Address is ${obj[member.id]}`);
+            users.find("id", member.id).send(`(◕‿◕✿) \n Hey! ${member.user}, Your Address is ${obj[member.id]}. \n \n You can change this with !address Your_Address`);
         }
+        //Deletes Member From Users Collection
+        users.delete(member.id);
         })
     });
 
 client.on("guildMemberRemove", (member) => {
+    // If User Leaves and Still is in Users, Removes User
     if(users.has(member.id)) users.delete(member.id);
 });
 
-
+// Turns On The Bot, Dude.
 client.login(config.token);
