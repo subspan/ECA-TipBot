@@ -5,7 +5,7 @@ const jsonfile = require('jsonfile');
 const client = new Discord.Client();
 const users = new Discord.Collection();
 const file = './addresses.json';
-const tmpAddress = [];
+let tmpAddress = [];
 
 client.on("ready", () => {
     console.log("I am ready!");
@@ -34,72 +34,97 @@ client.on("message", (message) => {
 
 //PRIVATE MESSAGES
 client.on("message", (message) => {
+    //Sets currentUser to Author ID
+    const currentUser = message.author.id;
+    //splits args after !
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    //assigns user address to arg1
     const address = args[1];
+    //shifts to LC
     const command = args.shift().toLowerCase();
+    //Stops if no prefix, if Author is BOT, or if Channel is not Private
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id == "397489814351380482") return;
     
     if(command === "address") {
-        
-        tmpAddress.push({["id"] : message.author.id,["address"] : address});
-        console.log(`(◕‿◕✿) Saving: ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].address} `);
-        
-        jsonfile.writeFile(file, tmpAddress, function(err) {
+        //Pushes JSON Data Into New Array
+        let obj = { [currentUser] : address };
+        //Writes tmpAddress to addresses.JSON
+        jsonfile.writeFile(file, obj, function(err) {
             if(err) {
+                //Displays Error If Error
                 console.log(`(ノಠ益ಠ)ノ彡┻━┻ ${err}`) 
                 message.reply(err) 
             } else {
-        console.log(`(◕‿◕✿) Information Saved ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].address}`);        
-        message.reply(`(◕‿◕✿) Information Saved! ID: ${tmpAddress[0].id} Address: ${tmpAddress[0].address}`);        
+                //Replies With Saved Information
+                console.log(`(◕‿◕✿) Information Saved ID: ${message.author.id} Address: ${address}`);        
+                message.reply(`(◕‿◕✿) Information Saved! ID: ${message.author.id} Address: ${address}`);        
             }
         });
-    };                            
-                            
+    };  
+    
+    
+    if(command === "write") {
+        let obj = { [currentUser] : address };
+        tmpAddress.push(obj);
+        fs.writeFile(file, JSON.stringify(tmpAddress), (err) => {
+            if (err) throw err;
+            console.log(tmpAddress);
+        })
+    }
+    
+    if(command === "test") {
+        let obj = { [currentUser] : address };
+        console.log(currentUser);
+        console.log(obj);
+        console.log(obj[currentUser]);
+        jsonfile.writeFile(file, obj, function(err) {
+            if(err) {
+                console.log(err)
+            } else {
+                console.log(obj);
+            }
+        })
+    }
+    
+    //Checks For Your Address and Returns From JSON
     if(command === "checkaddress") {
+        //Reads addresses.JSON
         jsonfile.readFile(file, function(err, obj) {
             if (err) {
+                //Provides Error if Error
                 console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
                 message.reply(`(ノಠ益ಠ)ノ彡┻━┻ Error Reading addresses.json`);
             } else {
-                let new_obj_array = obj.filter(function() {
-                    for (i = 0; i < obj.length; i++) {
-                        if (obj[i].id === message.author.id) {
-                            let foundUser = obj[i];
-                            console.log('(◕‿◕✿) User Found! ID: ' + foundUser.id + " Address: " + foundUser.address)
-                            message.reply('(◕‿◕✿) Found You! ID: ' + foundUser.id + " Address: " + foundUser.address)
-                        } else {
-                            console.log('(ノಠ益ಠ)ノ彡┻━┻ This ID Not Found');
-                            message.reply('(ノಠ益ಠ)ノ彡┻━┻ This ID Not Found');
-                        }
-                    }}
-                )
+                    //Loop For User
+                console.log(obj[currentUser]);
+                message.reply(`You're address is ${obj[currentUser]}`);
             }
         });
     }
 });
 
 
+client.on("guildMemberAdd", (member) => {
+    users.set(member.id, member.user);
+    jsonfile.readFile(file, function(err, obj) {
+        if (err) {
+            console.log('err');
+        } else {
+            console.log(obj[0]);
+        }
+    });
+});
 
 client.on("guildMemberAdd", (member) => {
     users.set(member.id, member.user);
     jsonfile.readFile(file, function(err, obj) {
         if (err) {
             console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
-            message.reply(`(ノಠ益ಠ)ノ彡┻━┻ Error Reading addresses.json`);
-        } else {
-            let new_obj_array = obj.filter(function() {
-                for (i = 0; i < obj.length; i++) {
-                    if (obj[i].id === member.id) {
-                        let foundUser = obj[i];
-                        users.find("id", foundUser.id).send(`Hey ${foundUser.id}, You're Tip Address is set to ${foundUser.address}`);
-                    } else {
-                        users.find("id", member.id).send(`Hey ${member.user}, reply with !address Your_Address to be able to receive tips!`);
-                    };
-                }
-            });
+        } else { 
+            console.log(obj);
         }
-    })
-});
+        })
+    });
 
 client.on("guildMemberRemove", (member) => {
     if(users.has(member.id)) users.delete(member.id);
