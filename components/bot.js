@@ -103,25 +103,18 @@ client.on("message", (message) => {
     }
 });
 
-
-client.on("guildMemberAdd", (member) => {
-    users.set(member.id, member.user);
-    jsonfile.readFile(file, function(err, obj) {
-        if (err) {
-            console.log('err');
-        } else {
-            console.log(obj[0]);
-        }
-    });
-});
-
 client.on("guildMemberAdd", (member) => {
     users.set(member.id, member.user);
     jsonfile.readFile(file, function(err, obj) {
         if (err) {
             console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
+        } else if(!obj[member.id]) {
+            users.find("id", member.id).send(
+                `Hey! ${member.user}, Reply with !address Your_Address. This Will Save Your Address To Your ID And Allow You To Receive Tips! \n \n PLEASE NOTE: If You Are Using Electra With TOR This Potentially Compromises Security by linking your Discord ID with your public wallet address. This data is only used for tip bot and kept safe, but we Advise Using a Public Address if this is a concern to you.`
+            );
         } else { 
-            console.log(obj);
+            console.log(obj[member.id]);
+            users.find("id", member.id).send(`Hey! ${member.user}, Your Address is ${obj[member.id]}`);
         }
         })
     });
