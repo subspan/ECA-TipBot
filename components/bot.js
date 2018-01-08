@@ -5,13 +5,12 @@ const jsonfile = require('jsonfile');
 const client = new Discord.Client();
 const users = new Discord.Collection();
 const file = './addresses.json';
-let tmpAddress = [];
 
 client.on("ready", () => {
     console.log("I am ready!");
 });
 
-//MAIN CHANNEL
+//MAIN CHANNEL / SERVER
 client.on("message", (message) => {
     //splits args after !
     const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
@@ -40,21 +39,52 @@ client.on("message", (message) => {
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id == "397489814351380482") return;
     
     if(command === "address") {
-        //Pushes JSON Data Into New Array
-        let obj = { [currentUser] : address };
-        //Writes tmpAddress to addresses.JSON
-        jsonfile.writeFile(file, obj, function(err) {
-            if(err) {
+        // Sets UserID as Key, Address as Info
+        let newInfo = (`"${currentUser}": "${address}"`);
+        jsonfile.readFile(file, (err, obj) => {
+            if (err) {
+                console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
+                message.reply(`(ノಠ益ಠ)ノ彡┻━┻ Error Reading addresses.json`);
+            // If No Address
+            } else if (!obj[currentUser]) {
+                // Adds New Info to Addresses.JSON
+                let newObj = (JSON.parse(JSON.stringify(obj).slice(0,-1)+","+newInfo+"}"));
+                // Writes New Addresses To Addressess.JSON
+                jsonfile.writeFile(file, newObj, function(err) {
+                    if(err) {
                 //Displays Error If Error
                 console.log(`(ノಠ益ಠ)ノ彡┻━┻ ${err}`) 
                 message.reply(err) 
-            } else {
+                    } else {
                 //Logs & Replies With Saved Information
-                console.log(`(◕‿◕✿) Information Saved ID: ${message.author.id} Address: ${address}`);        
-                message.reply(`(◕‿◕✿) Information Saved! ID: ${message.author.id} Address: ${address}`);        
-            }
-        });
-    };  
+                console.log(`(◕‿◕✿) Information Saved Address: ${newObj[currentUser]}`);        
+                message.reply(`(◕‿◕✿) Information Saved! Address: ${newObj[currentUser]}`);        
+                    }
+                })
+                        //This Changes Your Address If Found
+                    } else {
+                        // Sets Old Address
+                let oldAddress = obj[currentUser];
+                        // Define Search Parameters
+                let needle = (`"${currentUser}":"${oldAddress}"`);
+                        // Set New Information
+                let newAddress = (`"${currentUser}":"${address}"`);
+                        // Parses Edited Address List
+                let saveThis = JSON.parse(JSON.stringify(obj).replace(needle,newAddress));
+                        // Saves To Addresses.JSON
+                jsonfile.writeFile(file, saveThis, (err) => {
+                    if(err) {
+                        console.log(`(ノಠ益ಠ)ノ彡┻━┻ ${err}`) 
+                        message.reply(err) 
+                            } else {
+                        //Logs & Replies With Saved Information
+                        console.log(`(◕‿◕✿) Information Saved Address: ${saveThis[currentUser]}`);        
+                        message.reply(`(◕‿◕✿) Information Saved! Address: ${saveThis[currentUser]}`);        
+                    }
+            })
+        }
+    })
+}
     
     //Checks For Your Address and Returns From JSON
     if(command === "checkaddress") {
