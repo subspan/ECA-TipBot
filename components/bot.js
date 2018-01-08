@@ -21,8 +21,56 @@ client.on("message", (message) => {
     //Stops if no prefix, if Author is BOT, or if Channel is not Main-Channel
     if (!message.content.startsWith(config.prefix) || message.author.bot || message.channel.id !== "397489814351380482") return;
     
-    //Tip Commands Will Go Here
+    if (command === "tip" && (!args)) {
+        message.reply(`(╯°□°）╯︵dᴉʇ \n Who gets the tip?!? \n hint: !tip @username`);
+    }
     
+    if (command === "tip") {
+        // Set Tipper As Message Author
+        let tipper = message.author.id;
+        let tipperName = message.author.user;
+        // Sets @Username as sendTo
+        let sendToArg = args[0];
+        // Parses Args2 to Integer
+        let amount = (parseInt(args[1]));
+        if (!Number.isInteger(amount)) {
+            console.log('Tip Amount Not Number');
+                client.fetchUser(tipper)
+                .then(user => {user.send(`(◕‿◕✿) \n Tip Amount Must Be A Number! You Sent ${args[1]}`)})
+            return;
+        } else {
+        
+        // Finds >
+        let lastBit = sendToArg.lastIndexOf('>');
+        // Strips Off Extra Characters
+        let sendTo = sendToArg.substr(2,lastBit-2);
+        // Reads Addresses.JSON
+        
+        jsonfile.readFile(file, (err, obj) => {
+            if (err) {
+                console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
+                message.reply(`(ノಠ益ಠ)ノ彡┻━┻ Error Reading addresses.json`);
+            // If No Address
+            } else if (!obj[sendTo]) {
+                console.log(`User Address Not Found`);
+                // Message Tip Sender
+                client.fetchUser(tipper)
+                .then(user => {user.send(`(ノಠ益ಠ)ノ \n This Person Has Not Set Up A Tip Address... Message Them And Find Out Why!`)})
+                // Message Tip Received
+                client.fetchUser(sendTo)
+                .then(user => {user.send(`(◕‿◕✿) \n Hi ${sendToArg}! \n Someone Just Tried Sending You A Tip \n But You Have No Address Set Up! \n Reply With The Following To Set Up Address: \n !address Your_Address`)})
+            // If Address Is Found
+            } else {
+                // SEND TIP GOES HERE
+                
+                
+                //Log and Reply Tip Amount and Receiver
+                console.log(`Sent ${amount} ECA Sent To: ${obj[sendTo]}`);
+                message.reply(`Sent ${amount} ECA To ${sendToArg}`);
+            }
+        })
+        }
+    }
 });
 
 //PRIVATE MESSAGES
@@ -115,7 +163,7 @@ client.on("guildMemberAdd", (member) => {
     jsonfile.readFile(file, function(err, obj) {
         if (err) {
             console.log("(ノಠ益ಠ)ノ彡┻━┻" + err);
-            users.find("id", member.id).send(`Hey! ${member.user}, Tell The Bot Owner I Can't Read The Addresses List! ლ(ಠ益ಠლ)`);
+            users.find("id", member.id).send(`ლ(ಠ益ಠლ) \n Hey! ${member.user}, Tell The Bot Owner I Can't Read The Addresses List!`);
         // If No ID is Found in Addresses.JSON
         } else if(!obj[member.id]) {
             console.log(`(ノಠ益ಠ)ノ彡┻━┻ \n No Address Set For This Person: Sending Greeting`)
