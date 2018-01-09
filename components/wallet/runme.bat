@@ -1,0 +1,1 @@
+Electra-qt.exe -server -debug -debugnet -logtimestamps -rpcuser=user -rpcpassword=password  -rpcallowip=127.0.0.1

@@ -1,0 +1,10 @@
+{
+    "token": "YOUR_TOKEN_HERE",
+    "prefix":"!",
+    "owner":"YOUR_DISCORD_ID",
+    "mainChannel":"MAIN_CHANNEL_ID",
+    "bot":"BOT_ID",
+    "kap_port":"ELECTRA_PORT",
+    "kap_user":"ELECTRA_RPC_USER",
+    "kap_pass":"ELECTRA_RPC_PASSWORD"
+}
