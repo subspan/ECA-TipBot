@@ -8,7 +8,7 @@ A Bot You Can Use To Pay Other People On Discord with ECA!
 2. Set Up Config File.JS & Wallet
 3. Run app.JS
 
-Youtube Tutorial: Coming Soon
+Youtube Tutorial: https://youtu.be/Zl5RuWwJo74
 
 
 ### Prerequisites
